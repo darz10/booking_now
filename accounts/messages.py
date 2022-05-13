@@ -1,0 +1,5 @@
+USER_CREATED = "User was successfully created"
+FIREBASE_AUTH_INVALID_TOKEN = "Firebase token is wrong"
+USER_NO_EXISTS = "User with current phone number doesn't exists"
+COULD_NOT_VALIDATE = "Could not validate credentials"
+NO_PERMISSIONS = "Not enough permissions"
