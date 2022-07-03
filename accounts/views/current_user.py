@@ -1,11 +1,13 @@
-from fastapi import Request, HTTPException, Depends, Response
+from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
-from fastapi.openapi.models import OAuthFlows
 from fastapi.security.oauth2 import SecurityScopes
 from pydantic import ValidationError
 from jose import jwt, JWTError
 from accounts.messages import COULD_NOT_VALIDATE, NO_PERMISSIONS
 from settings import Settings, settings, get_settings
+from accounts.queries import UserRepository
+from database.db import async_session
+from database.models import User as UserModel
 
 
 ACCESS_TOKEN_EXPIRE_DAYS = 365 * 5
@@ -16,7 +18,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/login")
 
 
 async def get_current_user(
-    request: Request,
     security_scopes: SecurityScopes,
     token: str = Depends(oauth2_scheme),
     settings: Settings = Depends(get_settings),
@@ -32,17 +33,21 @@ async def get_current_user(
     )
     try:
         payload = jwt.decode(
-            token, settings.secret_key, algorithms=[ALGORITHM]
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
-        phone: str = payload.get("sub")
+        phone: str = payload.get("phone")
         if phone is None:
             raise credentials_exception
     except (ValidationError, JWTError):
         raise credentials_exception
 
-    user = await request.app.db.get_user(phone_number=phone)
 
-    if user is None:
+    async with async_session() as session:
+            async with session.begin():
+                user_model = UserRepository(session, UserModel)
+                user = user_model.get_user_by_phone(phone_number=str(phone))
+
+    if not user:
         raise credentials_exception
 
     for scope in security_scopes.scopes:
@@ -52,4 +57,4 @@ async def get_current_user(
                 detail=NO_PERMISSIONS,
                 headers={"WWW-Authenticate": auth_value},
             )
-    return user
+    return await user
