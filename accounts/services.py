@@ -1,35 +1,17 @@
 import datetime
+import re
 from typing import Optional
-from passlib.context import CryptContext
-import random
-import string
+from fastapi import HTTPException
+from jose import jwt
 
-from jose import jwt, JWTError
+from database.db import async_session
+from accounts.schemas.registration import CreateUser
+from accounts.utils import get_password_hash, generate_random_password
 from settings import settings
-
-
-password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-def get_password_hash(password: str):
-    """
-    Создание хэша пароля
-    """
-    return password_context.hash(password)
-
-
-def verify_password(plain_password: str, hashed_password: str):
-    """
-    Проверка пароля
-    """
-    return password_context.verify(plain_password, hashed_password)
-
-
-def generate_random_password():
-    """
-    Создание случайного пароля
-    """
-    return "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+from accounts.schemas import User, Token
+from accounts.messages import USER_NO_EXISTS
+from accounts.queries import UserRepository
+from database.models import User as UserModel
 
 
 def create_token(
@@ -50,3 +32,70 @@ def create_token(
         to_encode, secret_key, algorithm=settings.ALGORITHM
     )
     return encoded_jwt
+
+
+def get_user(user) -> User:
+    """
+    Метод для получения данных пользователя в схеме User
+    """
+    if user:
+        return User(**user)
+
+
+async def login(user, response) -> Token:
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail=USER_NO_EXISTS,
+        )
+    access_token_expires = datetime.timedelta(
+        days=settings.ACCESS_TOKEN_EXPIRE_DAYS
+    )
+    access_token = create_token(
+        data={"phone": user.phone_number, "user_id": user.id},
+        expires_delta=access_token_expires,
+        secret_key=settings.SECRET_KEY,
+    )
+    resp = Token(auth_token=access_token, type_token="bearer")
+    response.headers["authorization"] = "Bearer " + access_token
+    return resp
+
+
+async def getting_user_by_phone(phone: str) -> UserModel:
+    """Получение данных пользователя по номеру телефона"""
+    async with async_session() as session:
+        async with session.begin():
+            user_model = UserRepository(session, UserModel)
+            user = await user_model.get_user_by_phone(phone)
+            return user
+
+
+async def creating_user(user: CreateUser) -> UserModel:
+    """Создание нового пользователя"""
+    async with async_session() as session:
+        async with session.begin():
+            user_model = UserRepository(session, UserModel)
+            new_user = await user_model.create_user(
+                first_name=user.first_name,
+                last_name=user.last_name,
+                password=get_password_hash(generate_random_password()),
+                phone_number=user.phone_number,
+                email=user.email
+            )
+            return new_user
+
+
+async def updating_user(id: int, user: CreateUser) -> UserModel:
+    """Обновление пользователя"""
+    async with async_session() as session:
+        async with session.begin():
+            user_model = UserRepository(session, UserModel)
+            user_updated = await user_model.update_user(
+                id=current_user.id,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                password=user.password,
+                phone_number=user.phone_number,
+                email=user.email
+            )
+            return user_updated
