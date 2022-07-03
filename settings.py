@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     """Валидация данных конфигруации"""
 
     DB_CONNECT: PostgresDsn = Field(
-        ..., description="Подключение к postgresql"
+        ..., description="Подключение к PostgreSQL"
     )
     REDIS_HOST: str = Field(..., description="Хост для подключения redis")
     REDIS_PORT: int = Field(..., description="Порт для подключения redis")
