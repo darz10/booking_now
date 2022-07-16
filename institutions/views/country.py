@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Request, HTTPException
 
 from institutions.messages import NOT_FOUND
@@ -17,7 +18,7 @@ async def get_list_countries(
     try:
         return await getting_countries()
     except Exception as exc:
-        print("Error in endpoint get_list_places", exc)
+        logging.exception(f"Error in endpoint get_list_countries: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
         
 
@@ -29,9 +30,10 @@ async def get_country(
     try:
         return await getting_country(country_id)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint get_place", exc)
+        logging.exception(f"Error in endpoint get_country: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -43,7 +45,8 @@ async def get_cities_by_country(
     try:
         return await getting_cities_by_country(country_id)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint get_place", exc)
+        logging.exception(f"Error in endpoint get_cities_by_country: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

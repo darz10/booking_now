@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
@@ -25,9 +26,10 @@ async def delete_place_media_file(
         await deleting_place_media_file(place_media_file_id)
         return CustomResponse(status_code=204, description=SUCCESSFULLY)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint delete_place_media_file", exc)
+        logging.exception(f"Error in endpoint delete_place_media_file: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -39,5 +41,5 @@ async def create_place_media_file(
     try:
         return await creating_place_media_file(place_media_file)
     except Exception as exc:
-        print("Error in endpoint create_place_media_file", exc)
+        logging.exception(f"Error in endpoint create_place_media_file: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

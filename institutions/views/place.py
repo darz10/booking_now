@@ -1,4 +1,5 @@
 from typing import Optional
+import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import CustomResponse
@@ -33,7 +34,7 @@ async def get_list_places(
             return await filter_places(search=search, place_type=place_type)
         return await getting_places()
     except Exception as exc:
-        print("Error in endpoint get_list_places", exc)
+        logging.exception(f"Error in endpoint get_list_places: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
         
 
@@ -45,9 +46,10 @@ async def get_place(
     try:
         return await getting_place(place_id)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint get_place", exc)
+        logging.exception(f"Error in endpoint get_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -61,7 +63,7 @@ async def update_place(
     except NotFoundException:
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint update_place", exc)
+        logging.exception(f"Error in endpoint update_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -74,9 +76,10 @@ async def delete_place(
         await deleting_place(place_id)
         return CustomResponse(status_code=204, description=SUCCESSFULLY)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint delete_place", exc)
+        logging.exception(f"Error in endpoint delete_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 

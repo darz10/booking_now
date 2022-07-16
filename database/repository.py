@@ -10,7 +10,7 @@ class AbstractRepository(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def list(self):
+    def all(self):
         raise NotImplementedError()
 
     @abstractmethod

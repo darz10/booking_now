@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request, Depends, HTTPException
+import logging
 
 from accounts.schemas import CreateUser, UpdatedUser, User
 from accounts.views.current_user import get_current_user
@@ -15,6 +16,7 @@ async def add_new_user(request: Request, user: CreateUser):
     try:
         return await creating_user(user)
     except Exception as e:
+        logging.exception(f"{e}")
         raise HTTPException(status_code=400, detail=f"{e}") # TODO логирование
 
 
@@ -30,5 +32,6 @@ async def update_user(
     try:
         return await updating_user(current_user.id, user)
     except Exception as e:
+        logging.exception(f"{e}")
         print("Ошибка метода update_user", e)  # TODO логирование
         raise HTTPException(status_code=400, detail=f"{e}")

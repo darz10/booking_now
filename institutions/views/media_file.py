@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
@@ -25,7 +26,7 @@ async def get_list_media_files(request: Request):
     try:
         return await getting_media_files()
     except Exception as exc:
-        print("Error in endpoint get_list_media_files", exc)
+        logging.exception(f"Error in endpoint get_list_media_files: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
         
 
@@ -35,9 +36,10 @@ async def get_media_file(request: Request, media_file_id: int):
     try:
         return await getting_media_file(media_file_id)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint get_media_file", exc)
+        logging.exception(f"Error in endpoint get_media_file: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -48,9 +50,10 @@ async def update_media_file(request: Request, media_file_id: int,
     try:
         return await updating_media_file(media_file_id, media_file)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint update_media_file", exc)
+        logging.exception(f"Error in endpoint update_media_file: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -62,9 +65,10 @@ async def delete_media_file(request: Request, media_file_id: int,
         await deleting_media_file(media_file_id)
         return CustomResponse(status_code=204, description=SUCCESSFULLY)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint delete_media_file", exc)
+        logging.exception(f"Error in endpoint delete_media_file: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -75,5 +79,5 @@ async def create_media_file(request: Request, media_file: CreateMediaFile,
     try:
         return await creating_media_file(media_file)
     except Exception as exc:
-        print("Error in endpoint create_media_file", exc)
+        logging.exception(f"Error in endpoint create_media_file: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

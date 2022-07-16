@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
@@ -27,7 +28,7 @@ async def get_list_user_places(
     try:
         return await getting_user_places()
     except Exception as exc:
-        print("Error in endpoint get_list_user_places", exc)
+        logging.exception(f"Error in endpoint get_list_user_places: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
         
 
@@ -39,9 +40,10 @@ async def get_user_place(
     try:
         return await getting_user_place(user_place_id)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint get_user_place", exc)
+        logging.exception(f"Error in endpoint get_user_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -53,9 +55,10 @@ async def update_user_place(
     try:
         return await updating_user_place(user_place_id, user_place)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint update_user_place", exc)
+        logging.exception(f"Error in endpoint update_user_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -68,9 +71,10 @@ async def delete_user_place(
         await deleting_user_place(user_place_id)
         return CustomResponse(status_code=204, description=SUCCESSFULLY)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint delete_user_place", exc)
+        logging.exception(f"Error in endpoint delete_user_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -82,5 +86,5 @@ async def create_user_place(
     try:
         return await creating_user_place(user_place)
     except Exception as exc:
-        print("Error in endpoint create_user_place", exc)
+        logging.exception(f"Error in endpoint create_user_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

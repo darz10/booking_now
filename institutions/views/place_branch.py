@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
@@ -28,7 +29,7 @@ async def get_list_branches(
     try:
         return await getting_branches()
     except Exception as exc:
-        print("Error in endpoint get_list_branches", exc)
+        logging.exception(f"Error in endpoint get_list_branches: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
         
 
@@ -40,9 +41,10 @@ async def get_branch(
     try:
         return await getting_branch(branch_id)
     except NotFoundException:
+        logging.exception(f"Error in endpoint get_list_media_files: {exc}")
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint get_branch", exc)
+        logging.exception(f"Error in endpoint get_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -54,9 +56,10 @@ async def update_branch(
     try:
         return await updating_branch(branch_id, branch)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint update_branch", exc)
+        logging.exception(f"Error in endpoint update_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -69,9 +72,10 @@ async def delete_branch(
         await deleting_branch(branch_id)
         return CustomResponse(status_code=204, description=SUCCESSFULLY)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint delete_branch", exc)
+        logging.exception(f"Error in endpoint delete_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -83,7 +87,7 @@ async def create_branch(
     try:
         return await creating_branch(branch)
     except Exception as exc:
-        print("Error in endpoint create_branch", exc)
+        logging.exception(f"Error in endpoint create_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -97,9 +101,10 @@ async def get_list_tables_branch(request: Request, branch_id: int):
         else:
             raise NotFoundException(NOT_FOUND)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint get_list_branches", exc)
+        logging.exception(f"Error in endpoint get_list_tables_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 

@@ -1,4 +1,5 @@
 
+import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
@@ -28,7 +29,7 @@ async def get_list_reservations(request: Request,
     try:
         return await filter_reservations(user_id=current_user.id)
     except Exception as exc:
-        print("Error in endpoint get_list_reservations", exc)
+        logging.exception(f"Error in endpoint get_list_reservations: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
         
 
@@ -39,9 +40,10 @@ async def get_reservation(request: Request, reservation_id: int,
     try:
         return await getting_reservation(reservation_id)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint get_reservation", exc)
+        logging.exception(f"Error in endpoint get_reservation: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -53,9 +55,10 @@ async def update_reservation(request: Request, reservation_id: int,
     try:
         return await updating_reservation(reservation_id, reservation)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint update_reservation", exc)
+        logging.exception(f"Error in endpoint update_reservation: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -67,9 +70,10 @@ async def delete_reservation(request: Request, reservation_id: int,
         await deleting_reservation(reservation_id)
         return CustomResponse(status_code=204, description=SUCCESSFULLY)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint delete_reservation", exc)
+        logging.exception(f"Error in endpoint delete_reservation: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -80,5 +84,5 @@ async def create_reservation(request: Request, reservation: CreateReservation,
     try:
         return await creating_reservation(reservation)
     except Exception as exc:
-        print("Error in endpoint create_reservation", exc)
+        logging.exception(f"Error in endpoint create_reservation: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

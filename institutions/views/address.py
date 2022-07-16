@@ -1,4 +1,5 @@
 
+import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
@@ -26,7 +27,7 @@ async def get_list_addresses(request: Request):
     try:
         return await getting_addresses()
     except Exception as exc:
-        print("Error in endpoint get_list_addresses", exc)
+        logging.exception(f"Error in endpoint get_list_addresses: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
         
 
@@ -38,9 +39,10 @@ async def get_address(
     try:
         return await getting_address(address_id)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint get_addresses", exc)
+        logging.exception(f"Error in endpoint get_addresses: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -52,9 +54,10 @@ async def update_address(
     try:
         return await updating_address(address_id, address)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint update_address", exc)
+        logging.exception(f"Error in endpoint update_address: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -67,9 +70,10 @@ async def delete_address(
         await deleting_address(address_id)
         return CustomResponse(status_code=204, description=SUCCESSFULLY)
     except NotFoundException:
+        logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        print("Error in endpoint delete_address", exc)
+        logging.exception(f"Error in endpoint delete_address: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -81,5 +85,5 @@ async def create_address(
     try:
         return await creating_address(address)
     except Exception as exc:
-        print("Error in endpoint create_address", exc)
+        logging.exception(f"Error in endpoint create_address: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
