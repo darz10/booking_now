@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class AbstractRepository(ABC):
+class AbstractRepositoryReadOnly(ABC):
     def __init__(self, db_session):
         self.db_session = db_session
 
@@ -12,6 +12,9 @@ class AbstractRepository(ABC):
     @abstractmethod
     def all(self):
         raise NotImplementedError()
+
+
+class AbstractRepository(AbstractRepositoryReadOnly):
 
     @abstractmethod
     def create(self, obj):
