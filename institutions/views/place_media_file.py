@@ -17,9 +17,15 @@ tags = ["place_media_file"]
 router = APIRouter()
 
 
-@router.delete("/v1/place_media_files/{place_media_file_id}", tags=tags, summary="Удалить связь место-файл")
+@router.delete(
+    "/v1/place_media_files/{place_media_file_id}",
+    tags=tags,
+    summary="Удалить связь место-файл"
+)
 async def delete_place_media_file(
-    request: Request, place_media_file_id: int, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request, place_media_file_id: int,
+    current_user: User = Depends(get_current_user)  # TODO ограничить достпу
+                                                    # к изменению состояния
 ):
     """Удаление связи пользователь-место"""
     try:
@@ -33,9 +39,16 @@ async def delete_place_media_file(
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
-@router.post("/v1/place_media_files/", tags=tags, summary="Создать связь место-файл")
+@router.post(
+    "/v1/place_media_files/",
+    tags=tags,
+    summary="Создать связь место-файл"
+)
 async def create_place_media_file(
-    request: Request, place_media_file: CreatePlaceMediaFile, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request,
+    place_media_file: CreatePlaceMediaFile,
+    current_user: User = Depends(get_current_user)  # TODO ограничить достпу
+                                                    # к изменению состояния
 ):
     """Создать связь пользователь-место"""
     try:

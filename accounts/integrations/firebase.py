@@ -15,7 +15,8 @@ class FirebaseManager:
     @classmethod
     def get_phone_by_token(cls, firebase_token: str):
         """
-        Получить номер телефона, верифицированный в рамках firebase Auth, по токену, переданному в метод
+        Получить номер телефона, верифицированный в рамках firebase Auth,
+        по токену, переданному в метод
         """
         cred = credentials.Certificate(settings.FIREBASE_APP_CREDENTIALS)
         try:

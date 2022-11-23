@@ -8,11 +8,12 @@ from institutions.exceptions import NotFoundException
 from institutions.messages import SUCCESSFULLY, NOT_FOUND
 from institutions.schemas import BaseTable, UpdateTable
 from institutions.services import (
-    getting_tables, 
-    getting_table, 
+    getting_tables,
+    getting_table,
     updating_table,
     deleting_table,
-    creating_table
+    creating_table,
+    getting_active_reservations_by_table
 )
 
 
@@ -21,22 +22,26 @@ tags = ["tables"]
 router = APIRouter()
 
 
-@router.get("/v1/tables/", tags=tags, summary="Получение списка столов")
-async def get_list_tables(
-    request: Request
-):
+@router.get(
+    "/v1/tables/",
+    tags=tags,
+    summary="Получение списка столов"
+)
+async def get_list_tables(request: Request):
     """Получение списка столов"""
     try:
         return await getting_tables()
     except Exception as exc:
         logging.exception(f"Error in endpoint get_list_tables: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
-        
 
-@router.get("/v1/tables/{table_id}", tags=tags, summary="Получение стола")
-async def get_table(
-    request: Request, table_id: int
-):
+
+@router.get(
+    "/v1/tables/{table_id}",
+    tags=tags,
+    summary="Получение стола"
+)
+async def get_table(request: Request, table_id: int):
     """Получение стола"""
     try:
         return await getting_table(table_id)
@@ -48,9 +53,17 @@ async def get_table(
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
-@router.put("/v1/tables/{table_id}", tags=tags, summary="Обновить стол")
+@router.patch(
+    "/v1/tables/{table_id}",
+    tags=tags,
+    summary="Обновить стол"
+)
 async def update_table(
-    request: Request, table_id: int, table: UpdateTable, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request,
+    table_id: int,
+    table: UpdateTable,
+    current_user: User = Depends(get_current_user)  # TODO ограничить доступ
+                                                    # к изменению состояния
 ):
     """Обновление стола"""
     try:
@@ -65,7 +78,10 @@ async def update_table(
 
 @router.delete("/v1/tables/{table_id}", tags=tags, summary="Удалить стол")
 async def delete_table(
-    request: Request, table_id: int, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request,
+    table_id: int,
+    current_user: User = Depends(get_current_user)  # TODO ограничить достпу
+                                                    # к изменению состояния
 ):
     """Удаление стола"""
     try:
@@ -81,7 +97,10 @@ async def delete_table(
 
 @router.post("/v1/tables/", tags=tags, summary="Создать стол")
 async def create_table(
-    request: Request, table: BaseTable, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request,
+    table: BaseTable,
+    current_user: User = Depends(get_current_user)  # TODO ограничить достпу
+                                                    # к изменению состояния
 ):
     """Создать стол"""
     try:

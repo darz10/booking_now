@@ -17,7 +17,7 @@ async def add_new_user(request: Request, user: CreateUser):
         return await creating_user(user)
     except Exception as e:
         logging.exception(f"{e}")
-        raise HTTPException(status_code=400, detail=f"{e}") # TODO логирование
+        raise HTTPException(status_code=400, detail=f"{e}")
 
 
 @router.post(

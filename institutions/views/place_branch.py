@@ -7,12 +7,12 @@ from institutions.exceptions import NotFoundException
 from institutions.schemas import CreatePlaceBranch
 from institutions.messages import SUCCESSFULLY, NOT_FOUND
 from institutions.services import (
-    getting_branch, 
-    getting_branches, 
-    updating_branch, 
+    getting_branches,
+    getting_branch,
+    updating_branch,
     deleting_branch,
     creating_branch,
-    filter_tables
+    get_tables_by_branch_id
 )
 
 
@@ -21,7 +21,11 @@ tags = ["place_branches"]
 router = APIRouter()
 
 
-@router.get("/v1/place_branches/", tags=tags, summary="Получение списка точек компаний")
+@router.get(
+    "/v1/place_branches/",
+    tags=tags,
+    summary="Получение списка точек компаний"
+)
 async def get_list_branches(
     request: Request
 ):
@@ -31,16 +35,20 @@ async def get_list_branches(
     except Exception as exc:
         logging.exception(f"Error in endpoint get_list_branches: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
-        
 
-@router.get("/v1/place_branches/{branch_id}", tags=tags, summary="Получение точки компании")
+
+@router.get(
+    "/v1/place_branches/{branch_id}",
+    tags=tags,
+    summary="Получение точки компании"
+)
 async def get_branch(
     request: Request, branch_id: int
 ):
     """Получение точки компании"""
     try:
         return await getting_branch(branch_id)
-    except NotFoundException:
+    except NotFoundException as exc:
         logging.exception(f"Error in endpoint get_list_media_files: {exc}")
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
@@ -48,9 +56,17 @@ async def get_branch(
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
-@router.put("/v1/place_branches/{branch_id}", tags=tags, summary="Обновить точку компании")
+@router.patch(
+    "/v1/place_branches/{branch_id}",
+    tags=tags,
+    summary="Обновить точку компании"
+)
 async def update_branch(
-    request: Request, branch_id: int, branch: CreatePlaceBranch, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request,
+    branch_id: int,
+    branch: CreatePlaceBranch,
+    current_user: User = Depends(get_current_user)  # TODO ограничить достпу
+                                                    # к изменению состояния
 ):
     """Обновление точки компании"""
     try:
@@ -63,9 +79,16 @@ async def update_branch(
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
-@router.delete("/v1/place_branches/{branch_id}", tags=tags, summary="Удалить точку компании")
+@router.delete(
+    "/v1/place_branches/{branch_id}",
+    tags=tags,
+    summary="Удалить точку компании"
+)
 async def delete_branch(
-    request: Request, branch_id: int, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request,
+    branch_id: int,
+    current_user: User = Depends(get_current_user)  # TODO ограничить достпу
+                                                    # к изменению состояния
 ):
     """Удаление точки компании"""
     try:
@@ -79,9 +102,16 @@ async def delete_branch(
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
-@router.post("/v1/place_branches/", tags=tags, summary="Создать точку компании")
+@router.post(
+    "/v1/place_branches/",
+    tags=tags,
+    summary="Создать точку компании"
+)
 async def create_branch(
-    request: Request, branch: CreatePlaceBranch, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request,
+    branch: CreatePlaceBranch,
+    current_user: User = Depends(get_current_user)  # TODO ограничить достпу
+                                                    # к изменению состояния
 ):
     """Создать точку компании"""
     try:
@@ -91,13 +121,16 @@ async def create_branch(
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
-@router.get("/v1/place_branches/{branch_id}/tables", tags=tags, 
-            summary="Получение списка столов точки компании")
+@router.get(
+        "/v1/place_branches/{branch_id}/tables",
+        tags=tags,
+        summary="Получение списка столов точки компании"
+)
 async def get_list_tables_branch(request: Request, branch_id: int):
-    """Получение список точкек компаний"""
+    """Получение списка столов точки компании"""
     try:
         if await getting_branch(branch_id):
-            return await filter_tables(branch_id)
+            return await get_tables_by_branch_id(branch_id)
         else:
             raise NotFoundException(NOT_FOUND)
     except NotFoundException:
@@ -108,15 +141,14 @@ async def get_list_tables_branch(request: Request, branch_id: int):
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
-
 # @router.get(
-#     "/v1/place_branches/{place_branch_id}/favorite/{favorite_status}", 
-#     tags=tags, 
+#     "/v1/place_branches/{place_branch_id}/favorite/{favorite_status}",
+#     tags=tags,
 #     responses={200: {"model": PlaceBranch}}
 # )
 # async def set_user_to_place_branch(
 #     request: Request,
-#     place_branch_id: int, 
+#     place_branch_id: int,
 #     favorite_status: bool = False,
 #     current_user: User = Depends(get_current_user),
 # ):

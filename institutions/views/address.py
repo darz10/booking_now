@@ -8,11 +8,12 @@ from institutions.exceptions import NotFoundException
 from institutions.schemas import CreatePlaceAddress
 from institutions.messages import SUCCESSFULLY, NOT_FOUND
 from institutions.services import (
-    getting_addresses, 
-    getting_address, 
-    updating_address, 
-    deleting_address,
-    creating_address
+    getting_addresses,
+    getting_address,
+    creating_address,
+    updating_address,
+    deleting_address
+
 )
 
 
@@ -29,9 +30,13 @@ async def get_list_addresses(request: Request):
     except Exception as exc:
         logging.exception(f"Error in endpoint get_list_addresses: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
-        
 
-@router.get("/v1/addresses/{address_id}", tags=tags, summary="Получение адреса")
+
+@router.get(
+    "/v1/addresses/{address_id}",
+    tags=tags,
+    summary="Получение адреса"
+)
 async def get_address(
     request: Request, address_id: int
 ):
@@ -46,9 +51,17 @@ async def get_address(
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
-@router.put("/v1/addresses/{branch_id}", tags=tags, summary="Обновить адрес")
+@router.patch(
+    "/v1/addresses/{address_id}",
+    tags=tags,
+    summary="Обновить адрес"
+)
 async def update_address(
-    request: Request, address_id: int, address: CreatePlaceAddress, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request,
+    address_id: int,
+    address: CreatePlaceAddress,
+    current_user: User = Depends(get_current_user)  # TODO ограничить достпу к
+                                                    # изменению состояния
 ):
     """Обновление адреса"""
     try:
@@ -61,9 +74,16 @@ async def update_address(
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
-@router.delete("/v1/addresses/{address_id}", tags=tags, summary="Удалить адрес")
+@router.delete(
+    "/v1/addresses/{address_id}",
+    tags=tags,
+    summary="Удалить адрес"
+)
 async def delete_address(
-    request: Request, address_id: int, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request,
+    address_id: int,
+    current_user: User = Depends(get_current_user)  # TODO ограничить достпу к
+                                                    # изменению состояния
 ):
     """Удаление точки компании"""
     try:
@@ -79,7 +99,10 @@ async def delete_address(
 
 @router.post("/v1/addresses/", tags=tags, summary="Создать адрес")
 async def create_address(
-    request: Request, address: CreatePlaceAddress, current_user: User = Depends(get_current_user) # TODO ограничить достпу к изменению состояния
+    request: Request,
+    address: CreatePlaceAddress,
+    current_user: User = Depends(get_current_user)  # TODO ограничить достпу к
+                                                    # изменению состояния
 ):
     """Создать адрес"""
     try:

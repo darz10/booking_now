@@ -21,4 +21,3 @@ class PlaceAddress(BasePlaceAddress):
     id: int = Field(..., description="id адреса")
     country: Country = Field(..., description="Cтрана")
     city: City = Field(..., description="Город")
-    
