@@ -10,3 +10,5 @@ from .role import Role
 from .table import Table
 from .user_place import UserPlace
 from .user import User
+from .place_type import PlaceType
+

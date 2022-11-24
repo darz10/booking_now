@@ -8,7 +8,7 @@ class Table(Base):
     """Модель стола заведения"""
     __tablename__ = "tables"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     is_favourite = Column(Boolean, default=False)
     table_number = Column(Integer, nullable=False)
     max_people = Column(Integer, nullable=False)
@@ -18,12 +18,13 @@ class Table(Base):
     place_branch_id = Column(Integer, ForeignKey("place_branches.id"))
     reservations = relationship("Reservation")
 
-
-    __table_args__ = (UniqueConstraint('table_number', 'place_branch_id', name='_table_place_branch_unique'),
-                     )
+    __table_args__ = (UniqueConstraint(
+        'table_number', 'place_branch_id', name='_table_place_branch_unique'),
+    )
 
     def __str__(self):
-        return f"{self.place_branch_id} {self.table_number} {self.is_available}"
+        return f"{self.place_branch_id} {self.table_number} \
+                 {self.is_available}"
 
 
 tables = Table.__table__

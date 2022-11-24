@@ -1,5 +1,12 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON, Boolean, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    JSON,
+    Boolean,
+    DateTime
+)
 from sqlalchemy.sql import func
 
 
@@ -10,7 +17,7 @@ class MediaFile(Base):
     """Модель медиа файла c полями для загрузки в S3"""
     __tablename__ = "media_files"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     source_id = Column(String(150), nullable=False)
     source_fields = Column(JSON)
     source_url = Column(String(200))

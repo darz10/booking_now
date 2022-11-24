@@ -8,7 +8,7 @@ class Role(Base):
     """Модель роли пользователя"""
     __tablename__ = "roles"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
     users = relationship("User")
 

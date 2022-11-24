@@ -1,4 +1,3 @@
-from ast import Add
 from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
 
@@ -9,7 +8,7 @@ class Address(Base):
     """Модель адреса"""
     __tablename__ = "addresses"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     street = Column(String(150), nullable=False)
     building = Column(String(30), nullable=False)
     latitude = Column(Float, nullable=True)

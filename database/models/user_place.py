@@ -8,7 +8,7 @@ class UserPlace(Base):
     """Модель описывающаю связь пользователя с заведением"""
     __tablename__ = "user_places"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     place_branch_id = Column(Integer, ForeignKey("place_branches.id"))
     is_favourite = Column(Boolean, default=False)

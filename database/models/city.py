@@ -8,11 +8,10 @@ class City(Base):
     """Модель города"""
     __tablename__ = "cities"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
     country_id = Column(Integer, ForeignKey("countries.id"))
     country = relationship("Country")
-
 
     def __str__(self):
         return f"{self.name}"
