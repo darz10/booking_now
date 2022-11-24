@@ -1,20 +1,21 @@
 from asyncio import get_event_loop
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database.db import create_db
 from settings import settings
 from accounts.views import user, authorization
+from database.db import database
 from institutions.views import (
-    place, 
-    place_branch, 
-    country, 
-    city, 
+    place,
+    place_branch,
+    country,
+    city,
     address,
+    place_type,
     user_place,
     table,
     reservation,
     media_file,
-    place_media_file
+    place_media_file,
 )
 
 
@@ -34,11 +35,18 @@ app.add_middleware(
 async def startup():
     app.settings = settings
     app.loop = get_event_loop()
-    await create_db()
+    await database.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
 
 
 app.include_router(user.router)
 app.include_router(authorization.router)
+
+app.include_router(place_type.router)
 app.include_router(place.router)
 app.include_router(place_branch.router)
 app.include_router(country.router)

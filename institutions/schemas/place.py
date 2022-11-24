@@ -1,7 +1,6 @@
-from typing import Optional
+from typing import Optional, Tuple, List
 from pydantic import BaseModel, Field
 
-from institutions.enums import PlaceType
 from accounts.schemas import User
 
 
@@ -19,7 +18,23 @@ class BasePlace(BaseModel):
 
 class Place(BasePlace):
     """Основная схема места с определением типа места"""
-    type_place: PlaceType = Field(None, description="Тип места")
+    place_type: int = Field(..., description="Тип места")
+
+
+class PlaceFilter(BaseModel):
+    title__ilike: Optional[str] = Field(
+        None,
+        description="Поиск мест по названию"
+    )
+    place_type_id__eq: Optional[int] = Field(
+        None,
+        description="Поиск мест по id типа места"
+    )
+
+    @property
+    def has_objects(self):
+        values = self.dict().values()
+        return any(values)
 
 
 class UpdatePlace(Place):

@@ -32,10 +32,10 @@ async def get_list_places(
 ):
     """Получение список мест"""
     try:
-        # if filters.has_objects:
-        #     return await filter_places(
-        #             filters.to_list()
-        #         )
+        if filters.has_objects:
+            return await filter_places(
+                    filters
+                )
         return await getting_places()
     except Exception as exc:
         logging.exception(f"Error in endpoint get_list_places: {exc}")

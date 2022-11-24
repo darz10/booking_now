@@ -1,21 +1,29 @@
 from typing import List
 
 from sqlalchemy.future import select
-from sqlalchemy.orm import Session
+from databases import Database
+from databases.backends.postgres import Record
 
 from database.models import Country
-from database.repository import AbstractRepository
+from database.repository import AbstractRepositoryReadOnly
 
 
-class CountryRepository(AbstractRepository):
-    def __init__(self, db_session: Session, db_model: Country):
-        self.db_session = db_session
+class CountryRepository(AbstractRepositoryReadOnly):
+    def __init__(self, db_connection: Database, db_model: Country):
+        self.db_connection = db_connection
         self.db_model = db_model
 
-    async def all(self) -> List[Country]:
-        countries = await self.db_session.execute(select(self.db_model))
-        return countries.scalars().all()
+    async def all(self) -> List[Record]:
+        countries = await self.db_connection.fetch_all(
+            query=select(self.db_model)
+        )
+        return countries
 
-    async def get(self, id: int) -> Country:
-        country = await self.db_session.execute(select(self.db_model).where(self.db_model.id == id))
-        return country.scalars().one_or_none()
+    async def get(self, id: int) -> Record:
+        country = await self.db_connection.fetch_one(
+            query=select(self.db_model).where(self.db_model.id == id)
+        )
+        return country
+
+    async def filter(self, *args, **kwargs):
+        pass

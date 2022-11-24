@@ -108,3 +108,24 @@ async def create_table(
     except Exception as exc:
         logging.exception(f"Error in endpoint create_table: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
+
+
+@router.get(
+    "/v1/tables/{table_id}/reservations",
+    tags=tags,
+    summary="Получение списка резерваций стола"
+            " активных на текущий момент"
+)
+async def get_list_reservations_by_table(request: Request, table_id: int):
+    """Получение список точкек компаний"""
+    try:
+        if await getting_table(table_id):
+            return await getting_active_reservations_by_table(table_id)
+        else:
+            raise NotFoundException(NOT_FOUND)
+    except NotFoundException:
+        logging.exception(NOT_FOUND)
+        raise HTTPException(status_code=404, detail=NOT_FOUND)
+    except Exception as exc:
+        logging.exception(f"Error in endpoint get_list_tables_branch: {exc}")
+        raise HTTPException(status_code=400, detail=f"{exc}")

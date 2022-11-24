@@ -8,3 +8,4 @@ from .table import TableRepository
 from .reservation import ReservationRepository
 from .media_file import MediaFileRepository
 from .place_media_file import PlaceMediaFileRepository
+from .place_type import PlaceTypeRepository
