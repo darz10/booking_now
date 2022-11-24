@@ -1,10 +1,10 @@
 import datetime
-import re
 from typing import Optional
 from fastapi import HTTPException
 from jose import jwt
+from accounts.integrations.firebase import FirebaseManager
 
-from database.db import async_session
+from database.db import database
 from accounts.schemas.registration import CreateUser
 from accounts.utils import get_password_hash, generate_random_password
 from settings import settings
@@ -63,39 +63,34 @@ async def login(user, response) -> Token:
 
 async def getting_user_by_phone(phone: str) -> UserModel:
     """Получение данных пользователя по номеру телефона"""
-    async with async_session() as session:
-        async with session.begin():
-            user_model = UserRepository(session, UserModel)
-            user = await user_model.get_user_by_phone(phone)
-            return user
+    user_model = UserRepository(database, UserModel)
+    user = await user_model.get_user_by_phone(phone)
+    return user
 
 
 async def creating_user(user: CreateUser) -> UserModel:
     """Создание нового пользователя"""
-    async with async_session() as session:
-        async with session.begin():
-            user_model = UserRepository(session, UserModel)
-            new_user = await user_model.create_user(
-                first_name=user.first_name,
-                last_name=user.last_name,
-                password=get_password_hash(generate_random_password()),
-                phone_number=user.phone_number,
-                email=user.email
-            )
-            return new_user
+    user_model = UserRepository(database, UserModel)
+    phone = FirebaseManager.get_phone_by_token(user.firebase_token)
+    new_user = await user_model.create(
+        first_name=user.first_name,
+        last_name=user.last_name,
+        password=get_password_hash(generate_random_password()),
+        phone_number=phone,
+        email=user.email
+    )
+    return new_user
 
 
 async def updating_user(id: int, user: CreateUser) -> UserModel:
     """Обновление пользователя"""
-    async with async_session() as session:
-        async with session.begin():
-            user_model = UserRepository(session, UserModel)
-            user_updated = await user_model.update_user(
-                id=current_user.id,
-                first_name=user.first_name,
-                last_name=user.last_name,
-                password=user.password,
-                phone_number=user.phone_number,
-                email=user.email
-            )
-            return user_updated
+    user_model = UserRepository(database, UserModel)
+    user_updated = await user_model.update(
+        id=user.id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        password=user.password,
+        phone_number=user.phone_number,
+        email=user.email
+    )
+    return user_updated

@@ -6,11 +6,11 @@ from jose import jwt, JWTError
 from accounts.messages import COULD_NOT_VALIDATE, NO_PERMISSIONS
 from settings import Settings, settings, get_settings
 from accounts.queries import UserRepository
-from database.db import async_session
+from database.db import database
 from database.models import User as UserModel
 
 
-ACCESS_TOKEN_EXPIRE_DAYS = 365 * 5
+ACCESS_TOKEN_EXPIRE_DAYS = settings.ACCESS_TOKEN_EXPIRE_DAYS
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
 
@@ -41,11 +41,8 @@ async def get_current_user(
     except (ValidationError, JWTError):
         raise credentials_exception
 
-
-    async with async_session() as session:
-            async with session.begin():
-                user_model = UserRepository(session, UserModel)
-                user = user_model.get_user_by_phone(phone_number=str(phone))
+    user_model = UserRepository(database, UserModel)
+    user = user_model.get_user_by_phone(phone_number=str(phone))
 
     if not user:
         raise credentials_exception
