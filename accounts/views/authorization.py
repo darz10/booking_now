@@ -3,7 +3,7 @@ import logging
 
 from accounts.integrations.firebase import FirebaseManager
 from accounts.schemas import FirebaseToken, Token
-from accounts.services import login, getting_user_by_phone
+from accounts.services.user import login, getting_user_by_phone
 
 tags = ["accounts"]
 
@@ -17,8 +17,7 @@ async def authorization_user(
     """Авторизация пользователя с помощью firebase_token"""
     try:
         token = firebase_token.firebase_token
-        # phone = FirebaseManager.get_phone_by_token(token)
-        phone = "79025854917"
+        phone = FirebaseManager.get_phone_by_token(token)
         user = await getting_user_by_phone(phone)
         return await login(user, response)
     except Exception as e:
