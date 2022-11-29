@@ -29,14 +29,10 @@ async def updating_address(
     address: CreatePlaceAddress
 ) -> Record:
     repository = AddressRepository(database, AddressModel)
+    updated_data = address.dict(exclude_unset=True)
     address_updated = await repository.update(
         id=address_id,
-        country_id=address.country_id,
-        city_id=address.city_id,
-        street=address.street,
-        building=address.building,
-        latitude=address.latitude,
-        longitude=address.longitude
+        **updated_data
     )
     if not address_updated:
         raise NotFoundException(NOT_FOUND)

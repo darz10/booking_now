@@ -32,16 +32,10 @@ async def updating_reservation(
     reservation: UpdateReservation
 ) -> Record:
     repository = ReservationRepository(database, ReservationModel)
+    updated_data = reservation.dict(exclude_unset=True)
     reservation_updated = await repository.update(
         id=reservation_id,
-        amount_guests=reservation.amount_guests,
-        date_reservation=reservation.date_reservation,
-        time_start=reservation.time_start,
-        time_end=reservation.time_end,
-        celebration=reservation.celebration,
-        note=reservation.note,
-        user_id=reservation.user_id,
-        table_id=reservation.table_id
+        **updated_data
     )
     if not reservation_updated:
         raise NotFoundException(NOT_FOUND)

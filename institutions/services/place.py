@@ -26,15 +26,10 @@ async def getting_place(place_id: int) -> Record:
 
 async def updating_place(place_id: int, place: UpdatePlace) -> Record:
     repository = PlaceRepository(database, PlaceModel)
+    updated_data = place.dict(exclude_unset=True)
     place_updated = await repository.update(
         id=place_id,
-        title=place.title,
-        description=place.description,
-        url=place.url,
-        avatar=place.avatar,
-        email=place.email,
-        phone=place.phone,
-        place_type=place.place_type,
+        **updated_data
     )
     if not place_updated:
         raise NotFoundException(NOT_FOUND)

@@ -32,11 +32,10 @@ async def updating_user_place(
     user_place: UpdateUserPlace
 ) -> Record:
     repository = UserPlaceRepository(database, UserPlaceModel)
+    updated_data = user_place.dict(exclude_unset=True)
     user_place_updated = await repository.update(
         id=user_place_id,
-        user_id=user_place.user_id,
-        place_branch_id=user_place.place_branch_id,
-        is_favourite=user_place.is_favourite
+        **updated_data
     )
     if not user_place_updated:
         raise NotFoundException(NOT_FOUND)

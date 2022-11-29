@@ -29,14 +29,10 @@ async def getting_table(table_id: int) -> Record:
 
 async def updating_table(table_id: int, table: UpdateTable) -> Record:
     repository = TableRepository(database, TableModel)
+    updated_data = table.dict(exclude_unset=True)
     table_updated = await repository.update(
         id=table_id,
-        table_number=table.table_number,
-        max_people=table.max_people,
-        is_electricity=table.is_electricity,
-        floor=table.floor,
-        is_available=table.is_available,
-        place_branch_id=table.place_branch_id
+        **updated_data
     )
     if not table_updated:
         raise NotFoundException(NOT_FOUND)

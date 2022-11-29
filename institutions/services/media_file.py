@@ -32,14 +32,10 @@ async def updating_media_file(
     media_file: UpdateMediaFile
 ) -> Record:
     repository = MediaFileRepository(database, MediaFileModel)
+    updated_data = media_file.dict(exclude_unset=True)
     media_file_updated = await repository.update(
         id=media_file_id,
-        source_id=media_file.source_id,
-        source_fields=media_file.source_fields,
-        source_url=media_file.source_url,
-        uploaded=media_file.uploaded,
-        filename=media_file.filename,
-        user_id=media_file.user_id,
+        **updated_data
     )
     if not media_file_updated:
         raise NotFoundException(NOT_FOUND)

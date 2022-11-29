@@ -29,10 +29,10 @@ async def updating_branch(
     branch: CreatePlaceBranch
 ) -> Record:
     repository = PlaceBranchRepository(database, PlaceBranchModel)
+    updated_data = branch.dict(exclude_unset=True)
     branch_updated = await repository.update(
         id=branch_id,
-        place_id=branch.place_id,
-        place_address_id=branch.place_address_id
+        **updated_data
     )
     if not branch_updated:
         raise NotFoundException(NOT_FOUND)
