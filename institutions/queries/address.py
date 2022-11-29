@@ -7,6 +7,7 @@ from databases import Database
 
 from database.repository import AbstractRepository
 from database.models import Address
+from database.services import formation_fitlers_database
 
 
 class AddressRepository(AbstractRepository):
@@ -45,18 +46,7 @@ class AddressRepository(AbstractRepository):
         address = update(self.db_model).where(
             self.db_model.id == id
         ).returning(self.db_model)
-        if kwargs.get("country_id"):
-            address = address.values(country_id=kwargs["country_id"])
-        if kwargs.get("city_id"):
-            address = address.values(city_id=kwargs["city_id"])
-        if kwargs.get("street"):
-            address = address.values(street=kwargs["street"])
-        if kwargs.get("building"):
-            address = address.values(building=kwargs["building"])
-        if kwargs.get("latitude"):
-            address = address.values(latitude=kwargs["latitude"])
-        if kwargs.get("longitude"):
-            address = address.values(longitude=kwargs["longitude"])
+        address = address.values(**kwargs)
         result = await self.db_connection.fetch_one(address)
         return result
 
@@ -68,3 +58,9 @@ class AddressRepository(AbstractRepository):
         address.execution_options(synchronize_session="delete")
         deleted_address = await self.db_connection.execute(address)
         return deleted_address.all()
+
+    async def filter(self, *args, **kwargs) -> List[Record]:
+        formated_filters = formation_fitlers_database(self.db_model, *args)
+        addresses = await self.db_connection.fetch_all(
+            select(self.db_model).where(*formated_filters))
+        return addresses
