@@ -6,6 +6,7 @@ from databases.backends.postgres import Record
 from databases import Database
 from database.models import City
 from database.repository import AbstractRepositoryReadOnly
+from database.services import formation_fitlers_database
 
 
 class CityRepository(AbstractRepositoryReadOnly):
@@ -23,8 +24,8 @@ class CityRepository(AbstractRepositoryReadOnly):
         )
         return city
 
-    async def get_cities_by_country(self, country_id: int) -> List[Record]:
+    async def filter(self, *args, **kwargs) -> List[Record]:
+        formated_filters = formation_fitlers_database(self.db_model, *args)
         cities = await self.db_connection.fetch_all(
-            select(self.db_model).where(self.db_model.country_id == country_id)
-        )
+            select(self.db_model).where(*formated_filters))
         return cities
