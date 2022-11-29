@@ -6,6 +6,7 @@ from databases.backends.postgres import Record
 
 from database.models import Table
 from database.repository import AbstractRepository
+from database.services import formation_fitlers_database
 
 
 class TableRepository(AbstractRepository):
@@ -43,20 +44,7 @@ class TableRepository(AbstractRepository):
         table = update(self.db_model).\
                 where(self.db_model.id == id).\
                 returning(self.db_model)
-        if kwargs.get("is_favourite"):
-            table = table.values(is_favourite=kwargs["is_favourite"])
-        if kwargs.get("table_number"):
-            table = table.values(table_number=kwargs["table_number"])
-        if kwargs.get("max_people"):
-            table = table.values(max_people=kwargs["max_people"])
-        if kwargs.get("is_electricity"):
-            table = table.values(is_electricity=kwargs["is_electricity"])
-        if kwargs.get("floor"):
-            table = table.values(floor=kwargs["floor"])
-        if kwargs.get("is_available"):
-            table = table.values(is_available=kwargs["is_available"])
-        if kwargs.get("place_branch_id"):
-            table = table.values(place_branch_id=kwargs["place_branch_id"])
+        table = table.values(**kwargs)
         return await self.db_connection.fetch_one(table)
 
     async def delete(self, id: int) -> None:
@@ -68,12 +56,7 @@ class TableRepository(AbstractRepository):
         return deleted_table
 
     async def filter(self, *args, **kwargs) -> List[Record]:
-        queries = []
-        if kwargs.get("branch_id"):
-            queries.append(
-                self.db_model.place_branch_id == kwargs["branch_id"]
-            )
-        tables = await self.db_connection.fetch_all(
-            select(self.db_model).where(*queries)
-        )
-        return tables
+        formated_filters = formation_fitlers_database(self.db_model, *args)
+        reservations = await self.db_connection.fetch_all(
+            select(self.db_model).where(*formated_filters))
+        return reservations
