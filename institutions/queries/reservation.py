@@ -7,6 +7,7 @@ from databases.backends.postgres import Record
 
 from database.models import Reservation
 from database.repository import AbstractRepository
+from database.services import formation_fitlers_database
 from institutions.enums import CelebrationType
 
 
@@ -54,26 +55,7 @@ class ReservationRepository(AbstractRepository):
         reservation = update(self.db_model).\
                       where(self.db_model.id == id).\
                       returning(self.db_model)
-        if kwargs.get("amount_guests"):
-            reservation = reservation.values(
-                amount_guests=kwargs["amount_guests"]
-            )
-        if kwargs.get("date_reservation"):
-            reservation = reservation.values(
-                date_reservation=kwargs["date_reservation"]
-            )
-        if kwargs.get("time_start"):
-            reservation = reservation.values(time_start=kwargs["time_start"])
-        if kwargs.get("time_end"):
-            reservation = reservation.values(time_end=kwargs["time_end"])
-        if kwargs.get("celebration"):
-            reservation = reservation.values(celebration=kwargs["celebration"])
-        if kwargs.get("note"):
-            reservation = reservation.values(note=kwargs["note"])
-        if kwargs.get("user_id"):
-            reservation = reservation.values(user_id=kwargs["user_id"])
-        if kwargs.get("table_id"):
-            reservation = reservation.values(table_id=kwargs["table_id"])
+        reservation = reservation.values(**kwargs)
         return await self.db_connection.fetch_one(reservation)
 
     async def delete(self, id: int) -> None:
@@ -84,14 +66,7 @@ class ReservationRepository(AbstractRepository):
         return deleted_reservation
 
     async def filter(self, *args, **kwargs) -> List[Record]:
-        queries = []
-        if kwargs.get("user_id"):
-            queries.append(self.db_model.user_id == kwargs["user_id"])  # TODO возможно стоит делть проверку на тип данных которые я кладу в список
-        if kwargs.get("is_active"):
-            queries.append(self.db_model.is_active == kwargs["is_active"])
-        if kwargs.get("table_id"):
-            queries.append(self.db_model.table_id == kwargs["table_id"])
+        formated_filters = formation_fitlers_database(self.db_model, *args)
         reservations = await self.db_connection.fetch_all(
-                select(self.db_model).where(*queries)
-            )
+            select(self.db_model).where(*formated_filters))
         return reservations
