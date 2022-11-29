@@ -35,10 +35,7 @@ class PlaceBranchRepository(AbstractRepository):
         branch = update(self.db_model).\
                  where(self.db_model.id == id).\
                  returning(self.db_model)
-        if kwargs.get("place_id"):
-            branch = branch.values(place_id=kwargs["place_id"])
-        if kwargs.get("place_address_id"):
-            branch = branch.values(place_address_id=kwargs["place_address_id"])
+        branch = branch.values(**kwargs)
         return await self.db_connection.fetch_one(branch)
 
     async def delete(self, id: int) -> None:
