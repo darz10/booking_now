@@ -49,34 +49,10 @@ class UserRepository(AbstractRepository):
         )
         return user
 
-    async def update(
-        self,
-        id: int,
-        first_name: Optional[str],
-        last_name: Optional[str],
-        password: Optional[str],
-        phone_number: Optional[str],
-        email: Optional[str],
-        is_active: Optional[bool] = None,
-        role_id: Optional[int] = None
-    ) -> None:
+    async def update(self, id: int, *args, **kwargs) -> User:
         user = update(self.db_model).where(self.db_model.id == id)
-        if first_name:
-            user = user.values(first_name=first_name)
-        if last_name:
-            user = user.values(last_name=last_name)
-        if password:
-            user = user.values(password=password)
-        if phone_number:
-            user = user.values(phone_number=phone_number)
-        if is_active:
-            user = user.values(is_active=is_active)
-        if role_id:
-            user = user.values(role_id=role_id)
-        if email:
-            user = user.values(email=email)
-        user.execution_options(synchronize_session="fetch")
-        return await self.db_connection.execute(user)
+        user = user.values(**kwargs)
+        return await self.db_connection.fetch_one(user)
 
     async def delete(self, id: int) -> None:
         user = update(self.db_model).where(self.db_model.id == id)
