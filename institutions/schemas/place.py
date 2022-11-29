@@ -1,7 +1,8 @@
-from typing import Optional, Tuple, List
+from typing import Optional
 from pydantic import BaseModel, Field
 
 from accounts.schemas import User
+from institutions.schemas.base_filter import BaseFilter
 
 
 class BasePlace(BaseModel):
@@ -21,7 +22,7 @@ class Place(BasePlace):
     place_type: int = Field(..., description="Тип места")
 
 
-class PlaceFilter(BaseModel):
+class PlaceFilter(BaseFilter):
     title__ilike: Optional[str] = Field(
         None,
         description="Поиск мест по названию"
@@ -37,9 +38,10 @@ class PlaceFilter(BaseModel):
         return any(values)
 
 
-class UpdatePlace(Place):
-    id: int = Field(..., description="id места")
+class UpdatePlace(BasePlace):
+    place_type: int = Field(None, description="Тип места")
 
 
 class PlaceDB(UpdatePlace):
+    id: int = Field(..., description="id места")
     owner: User = Field(None, description="Создатель места")
