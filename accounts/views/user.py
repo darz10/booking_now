@@ -2,8 +2,11 @@ from fastapi import APIRouter, Request, Depends, HTTPException
 import logging
 
 from accounts.schemas import CreateUser, UpdatedUser, User
-from accounts.views.current_user import get_current_user
-from accounts.services import creating_user, updating_user
+from accounts.services import (
+    creating_user,
+    updating_user,
+    get_current_user
+)
 
 tags = ["accounts"]
 
