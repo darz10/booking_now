@@ -1,13 +1,14 @@
 import logging
-from typing import Optional
-from fastapi import APIRouter, Request, HTTPException
+
+from fastapi import APIRouter, Request, HTTPException, Depends
 
 from institutions.messages import NOT_FOUND
 from institutions.exceptions import NotFoundException
+from institutions.schemas.country import CountryFilter
 from institutions.services import (
     getting_countries,
     getting_country,
-    getting_cities_country
+    filtering_countries
 )
 
 
@@ -18,10 +19,13 @@ router = APIRouter()
 
 @router.get("/v1/countries", tags=tags, summary="Получение списка стран")
 async def get_list_countries(
-    request: Request, search: Optional[str] = None
+    request: Request,
+    filters: CountryFilter = Depends()
 ):
     """Получение список стран"""
     try:
+        if filters.has_objects:
+            return await filtering_countries(filters)
         return await getting_countries()
     except Exception as exc:
         logging.exception(f"Error in endpoint get_list_countries: {exc}")
@@ -40,23 +44,4 @@ async def get_country(
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
         logging.exception(f"Error in endpoint get_country: {exc}")
-        raise HTTPException(status_code=400, detail=f"{exc}")
-
-
-@router.get(
-    "/v1/country/{country_id}/cities",
-    tags=tags,
-    summary="Получение городов страны"
-)
-async def get_cities_by_country(
-    request: Request, country_id: int
-):
-    """Получение городов страны"""
-    try:
-        return await getting_cities_country(country_id)
-    except NotFoundException:
-        logging.exception(NOT_FOUND)
-        raise HTTPException(status_code=404, detail=NOT_FOUND)
-    except Exception as exc:
-        logging.exception(f"Error in endpoint get_cities_by_country: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
