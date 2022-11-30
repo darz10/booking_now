@@ -8,7 +8,7 @@ from .address import (
 from .city import (
     getting_cities,
     getting_city,
-    getting_cities_by_country,
+    filter_cities
 )
 from .country import (
     getting_countries,

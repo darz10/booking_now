@@ -23,7 +23,7 @@ async def getting_city(city_id: int) -> Record:
     return city
 
 
-async def getting_cities_by_country(country_id: int) -> Record:
+async def filter_cities(*args, **kwargs) -> List[Record]:
     repository = CityRepository(database, CityModel)
-    cities = await repository.get_cities_by_country(country_id)
+    cities = await repository.filter(*args, **kwargs)
     return cities
