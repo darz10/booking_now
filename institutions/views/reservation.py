@@ -3,10 +3,14 @@ import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
-from accounts.views import get_current_user
+from accounts.services import get_current_user
 from institutions.exceptions import NotFoundException
 from institutions.messages import SUCCESSFULLY, NOT_FOUND
-from institutions.schemas import CreateReservation, UpdateReservation
+from institutions.schemas import (
+    CreateReservation,
+    UpdateReservation,
+    ReservationFilter
+)
 from institutions.services import (
     filter_reservations,
     getting_reservation,
@@ -28,10 +32,16 @@ router = APIRouter()
 )
 async def get_list_reservations(
     request: Request,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    filters: ReservationFilter = Depends()
 ):
     """Получение списка броней"""
     try:
+        if filters.has_objects:
+            return await filter_reservations(
+                filters,
+                user_id=current_user.id,
+            )
         return await filter_reservations(user_id=current_user.id)
     except Exception as exc:
         logging.exception(f"Error in endpoint get_list_reservations: {exc}")
