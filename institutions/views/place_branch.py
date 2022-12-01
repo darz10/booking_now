@@ -2,9 +2,9 @@ import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
-from accounts.views import get_current_user
+from accounts.services import get_current_user
 from institutions.exceptions import NotFoundException
-from institutions.schemas import CreatePlaceBranch
+from institutions.schemas import CreatePlaceBranch, UpdatePlaceBranch
 from institutions.messages import SUCCESSFULLY, NOT_FOUND
 from institutions.services import (
     getting_branches,
@@ -64,7 +64,7 @@ async def get_branch(
 async def update_branch(
     request: Request,
     branch_id: int,
-    branch: CreatePlaceBranch,
+    branch: UpdatePlaceBranch,
     current_user: User = Depends(get_current_user)  # TODO ограничить достпу
                                                     # к изменению состояния
 ):

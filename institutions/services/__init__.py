@@ -13,7 +13,6 @@ from .city import (
 from .country import (
     getting_countries,
     getting_country,
-    getting_cities_country,
     filtering_countries,
 )
 from .media_file import (

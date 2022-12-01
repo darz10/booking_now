@@ -3,9 +3,9 @@ import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
-from accounts.views import get_current_user
+from accounts.services import get_current_user
 from institutions.exceptions import NotFoundException
-from institutions.schemas import CreatePlaceAddress
+from institutions.schemas import CreatePlaceAddress, UpdatePlaceAddress
 from institutions.messages import SUCCESSFULLY, NOT_FOUND
 from institutions.services import (
     getting_addresses,
@@ -13,7 +13,6 @@ from institutions.services import (
     creating_address,
     updating_address,
     deleting_address
-
 )
 
 
@@ -22,7 +21,11 @@ tags = ["address"]
 router = APIRouter()
 
 
-@router.get("/v1/addresses/", tags=tags, summary="Получение списка адресов")
+@router.get(
+    "/v1/addresses/",
+    tags=tags,
+    summary="Получение списка адресов"
+)
 async def get_list_addresses(request: Request):
     """Получение списка адресов"""
     try:
@@ -59,7 +62,7 @@ async def get_address(
 async def update_address(
     request: Request,
     address_id: int,
-    address: CreatePlaceAddress,
+    address: UpdatePlaceAddress,
     current_user: User = Depends(get_current_user)  # TODO ограничить достпу к
                                                     # изменению состояния
 ):
@@ -97,7 +100,11 @@ async def delete_address(
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
-@router.post("/v1/addresses/", tags=tags, summary="Создать адрес")
+@router.post(
+    "/v1/addresses/",
+    tags=tags,
+    summary="Создать адрес"
+)
 async def create_address(
     request: Request,
     address: CreatePlaceAddress,
