@@ -2,7 +2,7 @@ import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
-from accounts.views import get_current_user
+from accounts.services import get_current_user
 from institutions.exceptions import NotFoundException
 from institutions.schemas import CreateMediaFile, UpdateMediaFile
 from institutions.messages import SUCCESSFULLY, NOT_FOUND

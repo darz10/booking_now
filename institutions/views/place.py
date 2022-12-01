@@ -2,7 +2,7 @@ import logging
 from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
-from accounts.views import get_current_user
+from accounts.services import get_current_user
 from institutions.schemas import UpdatePlace
 from institutions.messages import NOT_FOUND, SUCCESSFULLY
 from institutions.exceptions import NotFoundException
