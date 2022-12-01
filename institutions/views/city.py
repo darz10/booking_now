@@ -29,7 +29,7 @@ async def get_list_cities(
                 )
         return await getting_cities()
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_cities: {exc}")
+        logging.exception(f"Error in method get_list_cities: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -45,5 +45,5 @@ async def get_city(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_city: {exc}")
+        logging.exception(f"Error in method get_city: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

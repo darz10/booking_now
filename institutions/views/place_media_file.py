@@ -35,7 +35,7 @@ async def delete_place_media_file(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint delete_place_media_file: {exc}")
+        logging.exception(f"Error in method delete_place_media_file: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -54,5 +54,5 @@ async def create_place_media_file(
     try:
         return await creating_place_media_file(place_media_file)
     except Exception as exc:
-        logging.exception(f"Error in endpoint create_place_media_file: {exc}")
+        logging.exception(f"Error in method create_place_media_file: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

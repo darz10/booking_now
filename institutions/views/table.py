@@ -32,7 +32,7 @@ async def get_list_tables(request: Request):
     try:
         return await getting_tables()
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_tables: {exc}")
+        logging.exception(f"Error in method get_list_tables: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -49,7 +49,7 @@ async def get_table(request: Request, table_id: int):
         logging.exception(NOT_FOUND)
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_table: {exc}")
+        logging.exception(f"Error in method get_table: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -72,7 +72,7 @@ async def update_table(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint update_table: {exc}")
+        logging.exception(f"Error in method update_table: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -91,7 +91,7 @@ async def delete_table(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint delete_table: {exc}")
+        logging.exception(f"Error in method delete_table: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -106,7 +106,7 @@ async def create_table(
     try:
         return await creating_table(table)
     except Exception as exc:
-        logging.exception(f"Error in endpoint create_table: {exc}")
+        logging.exception(f"Error in method create_table: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -127,5 +127,5 @@ async def get_list_reservations_by_table(request: Request, table_id: int):
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_tables_branch: {exc}")
+        logging.exception(f"Error in method get_list_tables_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

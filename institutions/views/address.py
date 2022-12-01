@@ -31,7 +31,7 @@ async def get_list_addresses(request: Request):
     try:
         return await getting_addresses()
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_addresses: {exc}")
+        logging.exception(f"Error in method get_list_addresses: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -50,7 +50,7 @@ async def get_address(
         logging.exception(NOT_FOUND)
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_addresses: {exc}")
+        logging.exception(f"Error in method get_addresses: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -73,7 +73,7 @@ async def update_address(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint update_address: {exc}")
+        logging.exception(f"Error in method update_address: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -96,7 +96,7 @@ async def delete_address(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint delete_address: {exc}")
+        logging.exception(f"Error in method delete_address: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -115,5 +115,5 @@ async def create_address(
     try:
         return await creating_address(address)
     except Exception as exc:
-        logging.exception(f"Error in endpoint create_address: {exc}")
+        logging.exception(f"Error in method create_address: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

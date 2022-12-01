@@ -38,7 +38,7 @@ async def get_list_places(
                 )
         return await getting_places()
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_places: {exc}")
+        logging.exception(f"Error in method get_list_places: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -57,7 +57,7 @@ async def get_place(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_place: {exc}")
+        logging.exception(f"Error in method get_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -79,7 +79,7 @@ async def update_place(
     except NotFoundException:
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint update_place: {exc}")
+        logging.exception(f"Error in method update_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -102,7 +102,7 @@ async def delete_place(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint delete_place: {exc}")
+        logging.exception(f"Error in method delete_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 

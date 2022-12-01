@@ -19,5 +19,5 @@ async def get_list_addresses(request: Request):
     try:
         return await getting_place_types()
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_addresses: {exc}")
+        logging.exception(f"Error in method get_list_addresses: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

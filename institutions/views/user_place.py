@@ -33,7 +33,7 @@ async def get_list_user_places(
     try:
         return await getting_user_places()
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_user_places: {exc}")
+        logging.exception(f"Error in method get_list_user_places: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -54,7 +54,7 @@ async def get_user_place(
         logging.exception(NOT_FOUND)
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_user_place: {exc}")
+        logging.exception(f"Error in method get_user_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -77,7 +77,7 @@ async def update_user_place(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint update_user_place: {exc}")
+        logging.exception(f"Error in method update_user_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -100,7 +100,7 @@ async def delete_user_place(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint delete_user_place: {exc}")
+        logging.exception(f"Error in method delete_user_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -119,5 +119,5 @@ async def create_user_place(
     try:
         return await creating_user_place(user_place)
     except Exception as exc:
-        logging.exception(f"Error in endpoint create_user_place: {exc}")
+        logging.exception(f"Error in method create_user_place: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

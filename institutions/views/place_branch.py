@@ -33,7 +33,7 @@ async def get_list_branches(
     try:
         return await getting_branches()
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_branches: {exc}")
+        logging.exception(f"Error in method get_list_branches: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -49,10 +49,10 @@ async def get_branch(
     try:
         return await getting_branch(branch_id)
     except NotFoundException as exc:
-        logging.exception(f"Error in endpoint get_list_media_files: {exc}")
+        logging.exception(f"Error in method get_list_media_files: {exc}")
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_branch: {exc}")
+        logging.exception(f"Error in method get_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -75,7 +75,7 @@ async def update_branch(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint update_branch: {exc}")
+        logging.exception(f"Error in method update_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -98,7 +98,7 @@ async def delete_branch(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint delete_branch: {exc}")
+        logging.exception(f"Error in method delete_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -117,7 +117,7 @@ async def create_branch(
     try:
         return await creating_branch(branch)
     except Exception as exc:
-        logging.exception(f"Error in endpoint create_branch: {exc}")
+        logging.exception(f"Error in method create_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -137,7 +137,7 @@ async def get_list_tables_branch(request: Request, branch_id: int):
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_tables_branch: {exc}")
+        logging.exception(f"Error in method get_list_tables_branch: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 

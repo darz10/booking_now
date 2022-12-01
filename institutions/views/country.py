@@ -28,7 +28,7 @@ async def get_list_countries(
             return await filtering_countries(filters)
         return await getting_countries()
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_countries: {exc}")
+        logging.exception(f"Error in method get_list_countries: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -43,5 +43,5 @@ async def get_country(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_country: {exc}")
+        logging.exception(f"Error in method get_country: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")

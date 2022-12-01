@@ -19,7 +19,7 @@ async def add_new_user(request: Request, user: CreateUser):
     try:
         return await creating_user(user)
     except Exception as e:
-        logging.exception(f"{e}")
+        logging.exception(f"Error in method add_new_user: {e}")
         raise HTTPException(status_code=400, detail=f"{e}")
 
 
@@ -35,6 +35,5 @@ async def update_user(
     try:
         return await updating_user(current_user.id, user)
     except Exception as e:
-        logging.exception(f"{e}")
-        print("Ошибка метода update_user", e)  # TODO логирование
+        logging.exception(f"Error in method update_user: {e}")
         raise HTTPException(status_code=400, detail=f"{e}")

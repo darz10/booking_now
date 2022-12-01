@@ -44,7 +44,7 @@ async def get_list_reservations(
             )
         return await filter_reservations(user_id=current_user.id)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_list_reservations: {exc}")
+        logging.exception(f"Error in method get_list_reservations: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -65,7 +65,7 @@ async def get_reservation(
         logging.exception(NOT_FOUND)
         raise NotFoundException(detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint get_reservation: {exc}")
+        logging.exception(f"Error in method get_reservation: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -87,7 +87,7 @@ async def update_reservation(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint update_reservation: {exc}")
+        logging.exception(f"Error in method update_reservation: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -109,7 +109,7 @@ async def delete_reservation(
         logging.exception(NOT_FOUND)
         raise HTTPException(status_code=404, detail=NOT_FOUND)
     except Exception as exc:
-        logging.exception(f"Error in endpoint delete_reservation: {exc}")
+        logging.exception(f"Error in method delete_reservation: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
 
 
@@ -123,5 +123,5 @@ async def create_reservation(
     try:
         return await creating_reservation(reservation)
     except Exception as exc:
-        logging.exception(f"Error in endpoint create_reservation: {exc}")
+        logging.exception(f"Error in method create_reservation: {exc}")
         raise HTTPException(status_code=400, detail=f"{exc}")
