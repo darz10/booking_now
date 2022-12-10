@@ -1,0 +1,56 @@
+version: '3.7'
+
+x-volumes:
+  &default-volumes
+  volumes:
+    - booking_now_media:/srv/booking_now/media/
+
+x-env:
+  &default-env
+  env_file:
+    - .env
+
+x-app:
+  &default-app
+  build: .
+  <<: *default-env
+  <<: *default-volumes
+
+services:
+  db:
+    image: postgres:14.6-alpine
+    container_name: db
+    restart: always
+    ports:
+      - "5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+    <<: *default-env
+  web:
+    <<: *default-app
+    restart: always
+    container_name: backend_app
+    command: bash nginx_configs/uvicorn.sh
+    links:
+      - "db:db"
+    depends_on:
+      - db
+  nginx:
+    build: nginx_configs/nginx/
+    container_name: nginx
+    restart: always
+    links:
+      - "web:web"
+    ports:
+      - "80:80"
+    expose:
+      - "80"
+    <<: *default-volumes
+
+volumes:
+  pgdata:
+  booking_now_media:
