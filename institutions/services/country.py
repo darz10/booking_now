@@ -12,7 +12,7 @@ from institutions.messages import NOT_FOUND
 from institutions.exceptions import NotFoundException
 
 
-async def getting_countries(self) -> List[Record]:
+async def getting_countries() -> List[Record]:
     repository = CountryRepository(database, CountryModel)
     countries = await repository.all()
     return countries
