@@ -3,22 +3,44 @@ from fastapi import APIRouter, Request, HTTPException, Depends
 
 from accounts.schemas import User, CustomResponse
 from accounts.services import get_current_user
-from institutions.schemas import UpdatePlace
+from institutions.schemas import (
+    UpdatePlace,
+    PlaceFilter,
+    Place
+)
 from institutions.messages import NOT_FOUND, SUCCESSFULLY
 from institutions.exceptions import NotFoundException
-from institutions.schemas.place import PlaceFilter
 from institutions.services import (
     filter_places,
     getting_places,
     deleting_place,
     getting_place,
-    updating_place
+    updating_place,
+    creating_place
 )
 
 
 tags = ["places"]
 
 router = APIRouter()
+
+
+@router.post(
+    "/v1/places",
+    tags=tags,
+    summary="Создание места"
+)
+async def create_place(
+    request: Request,
+    place: Place,
+    current_user: User = Depends(get_current_user)
+):
+    """Создание места"""
+    try:
+        return await creating_place(place, current_user)
+    except Exception as exc:
+        logging.exception(f"Error in method get_list_places: {exc}")
+        raise HTTPException(status_code=400, detail=f"{exc}")
 
 
 @router.get(
@@ -91,7 +113,7 @@ async def update_place(
 async def delete_place(
     request: Request,
     place_id: int,
-    current_user: User = Depends(get_current_user)  # TODO ограничить достпу
+    current_user: User = Depends(get_current_user)  # TODO ограничить доступ
                                                     # к изменению состояния
 ):
     """Удаление места"""

@@ -19,7 +19,7 @@ class PlaceRepository(AbstractRepository):
         title: str,
         user_id: int,
         place_type: int,
-        place_description: Optional[str] = None,
+        description: Optional[str] = None,
         url: Optional[str] = None,
         avatar: Optional[str] = None,
         email: Optional[str] = None,
@@ -27,7 +27,7 @@ class PlaceRepository(AbstractRepository):
     ) -> Record:
         new_place = insert(self.db_model).values(
             title=title,
-            place_description=place_description,
+            place_description=description,
             url=url,
             avatar=avatar,
             email=email,

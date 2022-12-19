@@ -7,13 +7,26 @@ from institutions.queries import PlaceRepository
 from database.models import Place as PlaceModel
 from institutions.messages import NOT_FOUND
 from institutions.exceptions import NotFoundException
-from institutions.schemas import UpdatePlace
+from institutions.schemas import UpdatePlace, Place
+from accounts.schemas import User
 
 
 async def getting_places() -> List[Record]:
     repository = PlaceRepository(database, PlaceModel)
     places = await repository.all()
     return places
+
+
+async def creating_place(
+    reservation: Place,
+    user: User
+) -> Record:
+    repository = PlaceRepository(database, PlaceModel)
+    created_data = reservation.dict()
+    new_place = await repository.create(
+        **created_data
+    )
+    return new_place
 
 
 async def getting_place(place_id: int) -> Record:

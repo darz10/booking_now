@@ -7,14 +7,14 @@ from institutions.schemas.base_filter import BaseFilter
 
 class BasePlace(BaseModel):
     """Базовая схема места (для наследования)"""
-    title: str = Field(None, description="Название места")
+    title: str = Field(..., description="Название места")
     description: Optional[str] = Field(None, description="Описание места")
     url: Optional[str] = Field(
         None, description="Адрес сайта места"
     )
     avatar: Optional[str] = Field(None, description="Изображение места")
     email: Optional[str] = Field(None, description="Email места")
-    phone: Optional[str] = Field(None, description="Email места")
+    phone: Optional[str] = Field(None, description="Телефон места")
 
 
 class Place(BasePlace):
@@ -39,7 +39,8 @@ class PlaceFilter(BaseFilter):
 
 
 class UpdatePlace(BasePlace):
-    place_type: int = Field(None, description="Тип места")
+    title: Optional[str] = Field(None, description="Название места")
+    place_type: Optional[int] = Field(None, description="Тип места")
 
 
 class PlaceDB(UpdatePlace):

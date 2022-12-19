@@ -5,7 +5,12 @@ from .place_address import (
     CreatePlaceAddress,
     UpdatePlaceAddress
 )
-from .place import Place, PlaceDB, UpdatePlace
+from .place import (
+    Place,
+    PlaceDB,
+    UpdatePlace,
+    PlaceFilter
+)
 from .place_branch import (
     PlaceBranch,
     CreatePlaceBranch,
